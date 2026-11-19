@@ -10,7 +10,7 @@ An attention-based 2D simulation in which a vehicle avoids randomly moving obsta
 |---|---|---|
 | `Steering Output/` | Attention policy outputs steering angle and acceleration directly | Available |
 | 5th-order polynomial path | Attention policy outputs a polynomial path | Planned |
-| Cubic spline path | Attention policy outputs a cubic spline path | Planned |
+| `Spline Curve/` | Attention policy outputs 5 knot points, joined by a cubic spline path | Available |
 
 ## Steering Output
 
@@ -33,4 +33,22 @@ cd "Steering Output"
 python train.py       # train and save policy.pt
 python attn_policy.py # run the animation with the trained policy
 python save_gif.py    # save attn_result.gif
+```
+
+## Spline Curve
+
+The attention policy outputs 5 points (x, y) at fixed knot times (t = 0.2 ... 1.0). Together with the current position they are joined by a natural cubic spline (implemented with NumPy only), and a fixed-gain controller follows a point on the spline.
+
+- `nav_sim.py`, `attn_policy.py` - same simulator and attention backbone as `Steering Output/`
+- `path3_spline.py` - natural cubic spline path generator (position and velocity)
+- `path3_train.py` - imitation learning (BC + DAgger) from an APF teacher that provides the knot points; saves `path3_policy.pt` and a GIF
+- `path3_save_gif.py` - renders `path3_result.gif` from trained weights
+- `evaluate.py` - success rate over 500 random maps
+- `path3_policy.pt` - trained weights
+
+```
+cd "Spline Curve"
+python path3_train.py     # train, save path3_policy.pt and path3_result.gif
+python path3_save_gif.py  # re-render the GIF only
+python evaluate.py        # success rate
 ```
