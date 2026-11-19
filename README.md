@@ -9,7 +9,7 @@ An attention-based 2D simulation in which a vehicle avoids randomly moving obsta
 | Folder | Method | Status |
 |---|---|---|
 | `Steering Output/` | Attention policy outputs steering angle and acceleration directly | Available |
-| 5th-order polynomial path | Attention policy outputs a polynomial path | Planned |
+| `Quintic Polynomial/` | Attention policy outputs a target point and target speed, joined to the current state by a 5th-order polynomial path | Available |
 | `Spline Curve/` | Attention policy outputs 5 knot points, joined by a cubic spline path | Available |
 
 ## Steering Output
@@ -33,6 +33,26 @@ cd "Steering Output"
 python train.py       # train and save policy.pt
 python attn_policy.py # run the animation with the trained policy
 python save_gif.py    # save attn_result.gif
+```
+
+## Quintic Polynomial
+
+At every step the attention policy outputs a target point (dx, dy) and a target speed ratio. A 5th-order polynomial that satisfies position, velocity and acceleration boundary conditions connects the current state to that target, and a fixed-gain controller follows a point slightly ahead on the curve.
+
+![quintic result](Quintic%20Polynomial/path2_result.gif)
+
+- `nav_sim.py`, `attn_policy.py` - same simulator and attention backbone as `Steering Output/`
+- `path2_quintic.py` - quintic polynomial boundary-condition solver (position and velocity)
+- `path2_train.py` - imitation learning (BC + DAgger) from an APF teacher; saves `path2_policy.pt` and a GIF
+- `path2_save_gif.py` - renders `path2_result.gif` from trained weights
+- `evaluate.py` - success rate over 200 random maps
+- `path2_policy.pt` - trained weights
+
+```
+cd "Quintic Polynomial"
+python path2_train.py     # train, save path2_policy.pt and path2_result.gif
+python path2_save_gif.py  # re-render the GIF only
+python evaluate.py        # success rate
 ```
 
 ## Spline Curve
