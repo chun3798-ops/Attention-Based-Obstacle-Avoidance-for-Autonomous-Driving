@@ -2,8 +2,6 @@
 
 An attention-based 2D simulation in which a vehicle avoids randomly moving obstacles. Built in Python, it trains an attention policy via imitation learning in two ways: outputting a steering angle directly, or outputting a path. Path output is implemented with two approaches: a 5th-order polynomial and a cubic spline curve.
 
-![result](Steering%20Output/attn_result.gif)
-
 ## Contents
 
 | Folder | Method | Status |
@@ -38,8 +36,6 @@ python save_gif.py    # save attn_result.gif
 ## Quintic Polynomial
 
 At every step the attention policy outputs a target point (dx, dy) and a target speed ratio. A 5th-order polynomial that satisfies position, velocity and acceleration boundary conditions connects the current state to that target, and a fixed-gain controller follows a point slightly ahead on the curve.
-
-![quintic result](Quintic%20Polynomial/path2_result.gif)
 
 - `nav_sim.py`, `attn_policy.py` - same simulator and attention backbone as `Steering Output/`
 - `path2_quintic.py` - quintic polynomial boundary-condition solver (position and velocity)
